@@ -23,6 +23,7 @@
  */
 package org.objectionary.entities;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -80,5 +81,23 @@ public final class ObjectWithApplication extends Entity {
             }
         }
         return String.format("%s(%s)", this.getName(), buffer);
+    }
+
+    @Override
+    public Entity copy() {
+        final Map<String, Entity> applicationCopy = new HashMap<>(this.application.size());
+        for (final Map.Entry<String, Entity> entry : this.application.entrySet()) {
+            applicationCopy.put(entry.getKey(), entry.getValue().copy());
+        }
+        return new ObjectWithApplication(this.getName(), applicationCopy);
+    }
+
+    @Override
+    public Entity reframe() {
+        final Map<String, Entity> applicationReframed = new HashMap<>(this.application.size());
+        for (final Map.Entry<String, Entity> entry : this.application.entrySet()) {
+            applicationReframed.put(entry.getKey(), entry.getValue().reframe());
+        }
+        return new ObjectWithApplication(this.getName(), applicationReframed);
     }
 }

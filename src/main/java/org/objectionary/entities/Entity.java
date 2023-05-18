@@ -27,7 +27,7 @@ package org.objectionary.entities;
  * This class represents the entity.
  * @since 0.1.0
  */
-public class Entity {
+public abstract class Entity {
 
     /**
      * Protected constructor.
@@ -36,4 +36,16 @@ public class Entity {
     protected Entity() {
         // Empty constructor
     }
+
+    /**
+     * Returns the deep copy of the entity.
+     * @return The deep copy of the entity.
+     */
+    public abstract Entity copy();
+
+    /**
+     * Add one pi to the entity.
+     * @return The entity with one pi added.
+     */
+    public abstract Entity reframe();
 }

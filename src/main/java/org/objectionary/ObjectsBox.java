@@ -57,6 +57,23 @@ public final class ObjectsBox {
         this.box.put(name, bindings);
     }
 
+    /**
+     * Gets an object.
+     * @param name The name of the object.
+     * @return The object.
+     */
+    public Map<String, Entity> getObject(final String name) {
+        return this.box.get(name);
+    }
+
+    /**
+     * Gets objects.
+     * @return The box of objects.
+     */
+    public Map<String, Map<String, Entity>> getBox() {
+        return this.box;
+    }
+
     @Override
     public String toString() {
         final List<String> results = new ArrayList<>(this.box.size());

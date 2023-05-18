@@ -54,4 +54,14 @@ public final class Data extends Entity {
     public String toString() {
         return String.valueOf(this.getData());
     }
+
+    @Override
+    public Entity copy() {
+        return new Data(this.getData());
+    }
+
+    @Override
+    public Entity reframe() {
+        return this;
+    }
 }
