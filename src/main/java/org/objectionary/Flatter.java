@@ -1,7 +1,6 @@
 package org.objectionary;
 
-import org.objectionary.entities.ObjectWithApplication;
-import org.objectionary.entities.Entity;
+import org.objectionary.entities.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +10,11 @@ import java.util.Map;
  * @since 0.1.0
  */
 public final class Flatter {
+
+    /**
+     * The counter of created objects.
+     */
+    private static int counter = 0;
 
     /**
      * The objects box.
@@ -31,32 +35,47 @@ public final class Flatter {
      */
     public ObjectsBox flat() {
         boolean found = true;
-
         while (found) {
             found = false;
-
             for (final Map.Entry<String, Map<String, Entity>> entry : this.box.getBox().entrySet()) {
                 for (final Map.Entry<String, Entity> binding : entry.getValue().entrySet()) {
                     if (binding.getValue() instanceof ObjectWithApplication) {
-                        flatOne(this.box, binding.getKey(), (ObjectWithApplication) binding.getValue());
+                        flatOne(this.box, binding.getKey(), (ObjectWithApplication) binding.getValue(), entry.getValue());
                         found = true;
                     }
                 }
             }
         }
-
         return this.box;
     }
 
     /**
      * Flattens one object.
-     * @param box The objects box.
-     * @param name The name of the object.
-     * @param object The object.
+     * @param allObjectsBox The box which contains all objects.
+     * @param bindingKey The name of binding to this non-flat object.
+     * @param nonFlatObject The non-flat object itself.
+     * @param userObject The object which contains the non-flat object.
      */
-    private static void flatOne (ObjectsBox box, String name, ObjectWithApplication object) {
-        final Map<String, Entity> newBindings = deepCopy(box.getObject(object.getName()));
+    private static void flatOne (ObjectsBox allObjectsBox, String bindingKey, ObjectWithApplication nonFlatObject, Map<String, Entity> userObject) {
+        final Map<String, Entity> bindingsCopy = deepCopy(allObjectsBox.getObject(nonFlatObject.getName()));
+        final Map<String, Entity> applicationCopy = deepCopy(nonFlatObject.getApplication());
 
+        final Map<String, Entity> reframedApplication = deepReframe(applicationCopy);
+
+        for (final Map.Entry<String, Entity> entry : reframedApplication.entrySet()) {
+            if (bindingsCopy.containsKey(entry.getKey())) {
+                bindingsCopy.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        final String newObjectName = String.format("ν%d", counter);
+        counter += 1;
+
+        allObjectsBox.putObject(newObjectName, bindingsCopy);
+
+        userObject.put(bindingKey, new FlatObject(newObjectName, "ξ"));
+
+        // TODO add graph transformation
     }
 
     /**
@@ -72,13 +91,15 @@ public final class Flatter {
         return result;
     }
 
-    private static Map<String, Entity> deepReframe(final Map<String, Entity> bindings) {
-        final Map<String, Entity> result = new HashMap<>(bindings.size());
-        for (final Map.Entry<String, Entity> entry : bindings.entrySet()) {
-            result.put(entry.getKey(), entry.getValue().reframe());
-        }
+    /**
+     * Returns the deep reframe of the bindings.
+     * @param bindings The bindings.
+     * @return The deep reframe of the bindings.
+     */
+    private static Map<String, Entity> deepReframe(Map<String, Entity> bindings) {
+        Map<String, Entity> result = new HashMap<>(bindings.size());
+        bindings.forEach((key, value) -> result.put(key, value.reframe()));
         return result;
     }
-
 
 }
