@@ -14,7 +14,7 @@ public final class Flatter {
     /**
      * The counter of created objects.
      */
-    private static int counter = 0;
+    private static int counter;
 
     /**
      * The objects box.
@@ -27,6 +27,7 @@ public final class Flatter {
      */
     public Flatter(final ObjectsBox box) {
         this.box = box;
+        Flatter.counter = 10; // TODO: 10 is a magic number
     }
 
     /**
@@ -42,10 +43,15 @@ public final class Flatter {
                     if (binding.getValue() instanceof ObjectWithApplication) {
                         flatOne(this.box, binding.getKey(), (ObjectWithApplication) binding.getValue(), entry.getValue());
                         found = true;
+                        break;
                     }
+                }
+                if (found) {
+                    break;
                 }
             }
         }
+
         return this.box;
     }
 
@@ -98,7 +104,9 @@ public final class Flatter {
      */
     private static Map<String, Entity> deepReframe(Map<String, Entity> bindings) {
         Map<String, Entity> result = new HashMap<>(bindings.size());
-        bindings.forEach((key, value) -> result.put(key, value.reframe()));
+        for (final Map.Entry<String, Entity> entry : bindings.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().reframe());
+        }
         return result;
     }
 
