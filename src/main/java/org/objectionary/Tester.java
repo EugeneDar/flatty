@@ -16,14 +16,8 @@ public class Tester {
      */
       public static void main(String[] args) {
           final List<String> lines = new ArrayList<>();
-
-          int correct = 0;
-
           try (BufferedReader reader = new BufferedReader(new FileReader(args[0]))) {
               String line;
-
-              correct = Integer.parseInt(reader.readLine());
-
               while ((line = reader.readLine()) != null) {
                   lines.add(line);
               }
