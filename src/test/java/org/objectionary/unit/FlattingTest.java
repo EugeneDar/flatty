@@ -23,8 +23,6 @@
  */
 package org.objectionary.unit;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.objectionary.Flatter;
 import org.objectionary.Parser;
@@ -39,7 +37,7 @@ final class FlattingTest {
      * Flatting test.
      */
     @Test
-    void printingTest() {
+    void flatThroughLayersTest() {
         final String[] input = {
             "ν0(𝜋) ↦ ⟦ z ↦ 0x0007, 𝜑 ↦ ν1( x ↦ ν2( y ↦ ξ.z ) ) ⟧",
             "ν1(𝜋) ↦ ⟦ x ↦ ø, 𝜑 ↦ ξ.x ⟧",
@@ -51,10 +49,8 @@ final class FlattingTest {
         System.out.println(output);
     }
 
-    // square ↦ ⟦x ↦ ∅, 𝜑 ↦ times( a ↦ 𝜉.x, b ↦ 𝜉.x ) ⟧,
-    // times ↦ ⟦𝜆 ↦ 𝑀_times, a ↦ ∅, b ↦ ∅⟧
     @Test
-    void printingTest2() {
+    void flatMultiplicationTest() {
         final String[] input = {
             "ν0(𝜋) ↦ ⟦ x ↦ ø, 𝜑 ↦ ν1( a ↦ ξ.x, b ↦ ξ.x ) ⟧",
             "ν1(𝜋) ↦ ⟦ λ ↦ int-times, a ↦ ø, b ↦ ø ⟧",

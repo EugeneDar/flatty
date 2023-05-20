@@ -85,19 +85,19 @@ public final class ObjectWithApplication extends Entity {
 
     @Override
     public Entity copy() {
-        final Map<String, Entity> applicationCopy = new HashMap<>(this.application.size());
+        final Map<String, Entity> copy = new HashMap<>(this.application.size());
         for (final Map.Entry<String, Entity> entry : this.application.entrySet()) {
-            applicationCopy.put(entry.getKey(), entry.getValue().copy());
+            copy.put(entry.getKey(), entry.getValue().copy());
         }
-        return new ObjectWithApplication(this.getName(), applicationCopy);
+        return new ObjectWithApplication(this.getName(), copy);
     }
 
     @Override
     public Entity reframe() {
-        final Map<String, Entity> applicationReframed = new HashMap<>(this.application.size());
+        final Map<String, Entity> reframed = new HashMap<>(this.application.size());
         for (final Map.Entry<String, Entity> entry : this.application.entrySet()) {
-            applicationReframed.put(entry.getKey(), entry.getValue().reframe());
+            reframed.put(entry.getKey(), entry.getValue().reframe());
         }
-        return new ObjectWithApplication(this.getName(), applicationReframed);
+        return new ObjectWithApplication(this.getName(), reframed);
     }
 }

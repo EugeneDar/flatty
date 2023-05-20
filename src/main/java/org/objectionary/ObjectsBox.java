@@ -23,8 +23,11 @@
  */
 package org.objectionary;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.objectionary.entities.Entity;
 
 /**
@@ -73,10 +76,10 @@ public final class ObjectsBox {
 
     @Override
     public String toString() {
-        final List<String> results = new ArrayList<>(this.box.size());
-        if (!box.containsKey("ν0")) {
+        if (!this.box.containsKey("ν0")) {
             throw new IllegalArgumentException("The box does not contain the object ν0.");
         }
+        final List<String> results = new ArrayList<>(this.box.size());
         results.add(ObjectsBox.objectToString("ν0", this.box.get("ν0")));
         for (final Map.Entry<String, Map<String, Entity>> entry : this.box.entrySet()) {
             if (entry.getKey().equals("ν0")) {
@@ -95,18 +98,20 @@ public final class ObjectsBox {
      * @param bindings The bindings of the object.
      * @return The string representation of the object.
      */
-    private static String objectToString(final String name, final Map<String, Entity> bindings) {
-        final List<String> resultBindings = Arrays.asList("Δ", "𝜋", "λ");
+    private static String objectToString(
+        final String name, final Map<String, Entity> bindings
+    ) {
+        final List<String> dataizations = Arrays.asList("Δ", "𝜋", "λ");
         final List<String> result = new ArrayList<>(bindings.size());
-        for (final String resultBinding : resultBindings) {
-            if (bindings.containsKey(resultBinding)) {
+        for (final String binding : dataizations) {
+            if (bindings.containsKey(binding)) {
                 result.add(
-                    String.format("%s ↦ %s", resultBinding, bindings.get(resultBinding))
+                    String.format("%s ↦ %s", binding, bindings.get(binding))
                 );
             }
         }
         for (final Map.Entry<String, Entity> binding : bindings.entrySet()) {
-            if (resultBindings.contains(binding.getKey())) {
+            if (dataizations.contains(binding.getKey())) {
                 continue;
             }
             result.add(
@@ -119,6 +124,5 @@ public final class ObjectsBox {
             String.join(", ", result)
         );
     }
-
 
 }
