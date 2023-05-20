@@ -18,6 +18,7 @@ public class Tester {
           final List<String> lines = new ArrayList<>();
           try (BufferedReader reader = new BufferedReader(new FileReader(args[0]))) {
               String line;
+              reader.readLine();
               while ((line = reader.readLine()) != null) {
                   lines.add(line);
               }

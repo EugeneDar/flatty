@@ -73,33 +73,46 @@ public final class ObjectsBox {
 
     @Override
     public String toString() {
-        final List<String> resultBindings = Arrays.asList("Δ", "𝜋", "λ");
         final List<String> results = new ArrayList<>(this.box.size());
+        if (!box.containsKey("ν0")) {
+            throw new IllegalArgumentException("The box does not contain the object ν0.");
+        }
+        results.add(ObjectsBox.objectToString("ν0", this.box.get("ν0")));
         for (final Map.Entry<String, Map<String, Entity>> entry : this.box.entrySet()) {
-            final Map<String, Entity> bindings = entry.getValue();
-            final List<String> line = new ArrayList<>(bindings.size());
-            for (final String resultBinding : resultBindings) {
-                if (bindings.containsKey(resultBinding)) {
-                    line.add(
-                        String.format("%s ↦ %s", resultBinding, bindings.get(resultBinding))
-                    );
-                }
+            if (entry.getKey().equals("ν0")) {
+                continue;
             }
-            for (final Map.Entry<String, Entity> binding : bindings.entrySet()) {
-                if (resultBindings.contains(binding.getKey())) {
-                    continue;
-                }
-                line.add(
-                    String.format("%s ↦ %s", binding.getKey(), binding.getValue())
-                );
-            }
-            results.add(String.format(
-                "%s(𝜋) ↦ ⟦ %s ⟧",
-                entry.getKey(),
-                String.join(", ", line)
-            ));
+            results.add(
+                ObjectsBox.objectToString(entry.getKey(), entry.getValue())
+            );
         }
         return String.join("\n", results);
     }
+
+    private static String objectToString(final String name, final Map<String, Entity> bindings) {
+        final List<String> resultBindings = Arrays.asList("Δ", "𝜋", "λ");
+        final List<String> result = new ArrayList<>(bindings.size());
+        for (final String resultBinding : resultBindings) {
+            if (bindings.containsKey(resultBinding)) {
+                result.add(
+                    String.format("%s ↦ %s", resultBinding, bindings.get(resultBinding))
+                );
+            }
+        }
+        for (final Map.Entry<String, Entity> binding : bindings.entrySet()) {
+            if (resultBindings.contains(binding.getKey())) {
+                continue;
+            }
+            result.add(
+                String.format("%s ↦ %s", binding.getKey(), binding.getValue())
+            );
+        }
+        return String.format(
+            "%s(𝜋) ↦ ⟦ %s ⟧",
+            name,
+            String.join(", ", result)
+        );
+    }
+
 
 }
