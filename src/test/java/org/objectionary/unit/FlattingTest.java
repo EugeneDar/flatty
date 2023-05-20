@@ -21,11 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.objectionary;
+package org.objectionary.unit;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.objectionary.Flatter;
+import org.objectionary.Parser;
 
 /**
  * Test skeleton.
@@ -34,18 +36,33 @@ import org.junit.jupiter.api.Test;
 final class FlattingTest {
 
     /**
-     * Test parsing.
+     * Flatting test.
      */
     @Test
     void printingTest() {
         final String[] input = {
-                "ν0(𝜋) ↦ ⟦ 𝜑 ↦ ν1( x ↦ ν2( y ↦ 0x0007 ) ) ⟧",
-                "ν1(𝜋) ↦ ⟦ x ↦ ø, 𝜑 ↦ ξ.x ⟧",
-                "ν2(𝜋) ↦ ⟦ y ↦ ø, 𝜑 ↦ ξ.y ⟧",
+            "ν0(𝜋) ↦ ⟦ z ↦ 0x0007, 𝜑 ↦ ν1( x ↦ ν2( y ↦ ξ.z ) ) ⟧",
+            "ν1(𝜋) ↦ ⟦ x ↦ ø, 𝜑 ↦ ξ.x ⟧",
+            "ν2(𝜋) ↦ ⟦ y ↦ ø, 𝜑 ↦ ξ.y ⟧",
         };
         final Parser parser = new Parser(String.join("\n", input));
         final Flatter flatter = new Flatter(parser.parse());
         final String output = flatter.flat().toString();
         System.out.println(output);
     }
+
+    // square ↦ ⟦x ↦ ∅, 𝜑 ↦ times( a ↦ 𝜉.x, b ↦ 𝜉.x ) ⟧,
+    // times ↦ ⟦𝜆 ↦ 𝑀_times, a ↦ ∅, b ↦ ∅⟧
+    @Test
+    void printingTest2() {
+        final String[] input = {
+            "ν0(𝜋) ↦ ⟦ x ↦ ø, 𝜑 ↦ ν1( a ↦ ξ.x, b ↦ ξ.x ) ⟧",
+            "ν1(𝜋) ↦ ⟦ λ ↦ int-times, a ↦ ø, b ↦ ø ⟧",
+        };
+        final Parser parser = new Parser(String.join("\n", input));
+        final Flatter flatter = new Flatter(parser.parse());
+        final String output = flatter.flat().toString();
+        System.out.println(output);
+    }
+
 }

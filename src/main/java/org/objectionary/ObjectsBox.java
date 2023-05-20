@@ -23,10 +23,7 @@
  */
 package org.objectionary;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.objectionary.entities.Entity;
 
@@ -76,21 +73,31 @@ public final class ObjectsBox {
 
     @Override
     public String toString() {
+        final List<String> resultBindings = Arrays.asList("Δ", "𝜋", "λ");
         final List<String> results = new ArrayList<>(this.box.size());
         for (final Map.Entry<String, Map<String, Entity>> entry : this.box.entrySet()) {
-            results.add(
-                String.format(
-                    "%s(𝜋) ↦ ⟦ %s ⟧",
-                    entry.getKey(),
-                    entry.getValue().entrySet()
-                        .stream()
-                        .map(
-                            binding -> String.format(
-                            "%s ↦ %s", binding.getKey(), binding.getValue()
-                        ))
-                        .collect(Collectors.joining(", "))
-                )
-            );
+            final Map<String, Entity> bindings = entry.getValue();
+            final List<String> line = new ArrayList<>(bindings.size());
+            for (final String resultBinding : resultBindings) {
+                if (bindings.containsKey(resultBinding)) {
+                    line.add(
+                        String.format("%s ↦ %s", resultBinding, bindings.get(resultBinding))
+                    );
+                }
+            }
+            for (final Map.Entry<String, Entity> binding : bindings.entrySet()) {
+                if (resultBindings.contains(binding.getKey())) {
+                    continue;
+                }
+                line.add(
+                    String.format("%s ↦ %s", binding.getKey(), binding.getValue())
+                );
+            }
+            results.add(String.format(
+                "%s(𝜋) ↦ ⟦ %s ⟧",
+                entry.getKey(),
+                String.join(", ", line)
+            ));
         }
         return String.join("\n", results);
     }
