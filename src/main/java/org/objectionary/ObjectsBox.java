@@ -89,6 +89,12 @@ public final class ObjectsBox {
         return String.join("\n", results);
     }
 
+    /**
+     * Converts an object to a string.
+     * @param name The name of the object.
+     * @param bindings The bindings of the object.
+     * @return The string representation of the object.
+     */
     private static String objectToString(final String name, final Map<String, Entity> bindings) {
         final List<String> resultBindings = Arrays.asList("Δ", "𝜋", "λ");
         final List<String> result = new ArrayList<>(bindings.size());
