@@ -80,7 +80,7 @@ public final class ObjectsBox {
         for (final Map.Entry<String, Map<String, Entity>> entry : this.box.entrySet()) {
             results.add(
                 String.format(
-                    "%s ↦ ⟦ %s ⟧",
+                    "%s(𝜋) ↦ ⟦ %s ⟧",
                     entry.getKey(),
                     entry.getValue().entrySet()
                         .stream()

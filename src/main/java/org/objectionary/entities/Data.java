@@ -52,7 +52,7 @@ public final class Data extends Entity {
 
     @Override
     public String toString() {
-        return String.valueOf(this.getData());
+        return String.format("0x%04X", this.value);
     }
 
     @Override
