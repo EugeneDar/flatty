@@ -29,8 +29,10 @@ import java.util.Queue;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.List;
 import org.objectionary.entities.Entity;
 import org.objectionary.entities.FlatObject;
+import org.objectionary.entities.Locator;
 import org.objectionary.entities.ObjectWithApplication;
 
 /**
@@ -72,7 +74,6 @@ public final class Flatter {
                 for (final Map.Entry<String, Entity> binding : entry.getValue().entrySet()) {
                     if (binding.getValue() instanceof ObjectWithApplication) {
                         flatOne(
-                            this.box,
                             binding.getKey(),
                             (ObjectWithApplication) binding.getValue(),
                             entry.getValue()
@@ -87,23 +88,22 @@ public final class Flatter {
             }
         }
         removeUnusedObjects();
+        resuspendLocalBinds();
         return this.box;
     }
 
     /**
      * Flattens one object.
-     * @param box The box which contains all objects.
      * @param key The name of binding to this non-flat object.
      * @param object The non-flat object itself.
      * @param user The object which contains the non-flat object.
      */
-    private static void flatOne(
-        final ObjectsBox box,
+    private void flatOne(
         final String key,
         final ObjectWithApplication object,
         final Map<String, Entity> user
     ) {
-        final Map<String, Entity> bindings = deepCopy(box.getObject(object.getName()));
+        final Map<String, Entity> bindings = deepCopy(this.box.getObject(object.getName()));
         final Map<String, Entity> application = deepCopy(object.getApplication());
         final Map<String, Entity> reframed = deepReframe(application);
         for (final Map.Entry<String, Entity> entry : reframed.entrySet()) {
@@ -113,7 +113,7 @@ public final class Flatter {
         }
         final String name = String.format("ν%d", Flatter.counter);
         Flatter.counter += 1;
-        box.putObject(name, bindings);
+        this.box.putObject(name, bindings);
         user.put(key, new FlatObject(name, "ξ"));
 
         // TODO add graph transformation
@@ -148,6 +148,32 @@ public final class Flatter {
         }
 
         this.box.getBox().entrySet().removeIf(entry -> !uses.contains(entry.getKey()));
+    }
+
+    /**
+     * Takes all locators to local variables and clearly sets them up.
+     */
+    private void resuspendLocalBinds() {
+        for (final Map<String, Entity> bindings : this.box.getBox().values()) {
+            boolean found = true;
+            while (found) {
+                found = false;
+                for (final Map.Entry<String, Entity> binding : bindings.entrySet()) {
+                    if (binding.getValue() instanceof Locator) {
+                        final List<String> locator = ((Locator) binding.getValue()).getPath();
+                        if (!locator.get(0).equals("ξ")) {
+                            continue;
+                        }
+                        final String name = locator.get(1);
+                        final Entity entity = bindings.get(name);
+                        bindings.remove(name);
+                        bindings.put(binding.getKey(), entity);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**

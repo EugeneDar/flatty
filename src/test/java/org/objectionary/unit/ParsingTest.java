@@ -54,7 +54,6 @@ final class ParsingTest {
             "ν5(𝜋) ↦ ⟦ 𝜑 ↦ ν3(ξ) ⟧",
         };
         final Parser parser = new Parser(String.join("\n", input));
-        System.out.println(parser.parse().toString());
         final boolean equals = parser.parse().toString().equals(String.join("\n", correct));
         MatcherAssert.assertThat(
             equals,
