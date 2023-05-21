@@ -112,6 +112,7 @@ public final class Parser {
         } else if (isObject(value)) {
             result = createObject(tokenizer, value);
         } else {
+            System.out.println(value);
             throw new IllegalArgumentException("Unknown token");
         }
         return result;

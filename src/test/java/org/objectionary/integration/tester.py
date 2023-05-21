@@ -24,6 +24,7 @@ JAVA_FILES = [
 def walk_files(directory):
     for root, dirs, files in os.walk(directory):
         for f in files:
+            print("Running test: " + f)
             file_path = os.path.abspath(os.path.join(root, f))
             run_java(file_path)
             flat_file = file_path.replace("input", "flat")

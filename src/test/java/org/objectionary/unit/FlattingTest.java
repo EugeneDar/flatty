@@ -35,6 +35,7 @@ final class FlattingTest {
 
     /**
      * Flatting test.
+     * This is incorrect test, because we can't use ξ as locator.
      */
     @Test
     void flatThroughLayersTest() {
