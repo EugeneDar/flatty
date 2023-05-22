@@ -52,6 +52,7 @@ def run_rust(test_name, correct):
     ret = subprocess.run(["target/release/custom_executor", test_name, correct], cwd=directory)
     if ret.returncode != 0:
         print("Test failed: " + test_name)
+        subprocess.run(["rm", test_name])
         sys.exit(1)
 
 walk_files("src/test/java/org/objectionary/integration/resources")
