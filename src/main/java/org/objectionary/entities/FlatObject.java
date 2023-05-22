@@ -81,7 +81,7 @@ public final class FlatObject extends Entity {
 
     @Override
     public Entity copy() {
-        return new FlatObject(this.getName(), this.getLocator());
+        return new FlatObject(this.name, this.locator);
     }
 
     @Override

@@ -23,13 +23,8 @@
  */
 package org.objectionary;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
+
 import org.objectionary.entities.Entity;
 import org.objectionary.entities.FlatObject;
 import org.objectionary.entities.Locator;
@@ -64,7 +59,7 @@ public final class Flatter {
      * @return The flattened objects box.
      */
     public ObjectsBox flat() {
-        Flatter.counter = findMaxIndex(box) + 1;
+        Flatter.counter = findMaxIndex() + 1;
         boolean found = true;
         while (found) {
             found = false;
@@ -89,6 +84,7 @@ public final class Flatter {
         }
         removeUnusedObjects();
         resuspendLocalBinds();
+        renameObjects();
         return this.box;
     }
 
@@ -115,8 +111,6 @@ public final class Flatter {
         Flatter.counter += 1;
         this.box.putObject(name, bindings);
         user.put(key, new FlatObject(name, "ξ"));
-
-        // TODO add graph transformation
     }
 
     /**
@@ -132,12 +126,6 @@ public final class Flatter {
             final String name = queue.poll();
             uses.add(name);
             for (final Map.Entry<String, Entity> binding : this.box.getObject(name).entrySet()) {
-                if (binding.getValue() instanceof ObjectWithApplication) {
-                    final String objectName = ((ObjectWithApplication) binding.getValue()).getName();
-                    if (!uses.contains(objectName)) {
-                        queue.add(objectName);
-                    }
-                }
                 if (binding.getValue() instanceof FlatObject) {
                     final String objectName = ((FlatObject) binding.getValue()).getName();
                     if (!uses.contains(objectName)) {
@@ -177,12 +165,50 @@ public final class Flatter {
     }
 
     /**
+     * Renames the objects to use smaller indexes.
+     */
+    private void renameObjects() {
+        final List<Integer> numbersWeHave = new ArrayList<>();
+        for (final String name : this.box.getBox().keySet()) {
+            numbersWeHave.add(Integer.parseInt(name.substring(1)));
+        }
+        Collections.sort(numbersWeHave);
+
+        final int objectsInBoxCount = this.box.getBox().size();
+
+        for (int i = 0; i < objectsInBoxCount;++i) {
+            final String to = String.valueOf(i);
+            final String from = String.valueOf(numbersWeHave.get(i));
+            if (to.equals(from)) {
+                continue;
+            }
+            changeName(String.format("ν%s", from), String.format("ν%s", to));
+        }
+    }
+
+    private void changeName(final String from, final String to) {
+        for (final Map.Entry<String, Map<String, Entity>> bindings : this.box.getBox().entrySet()) {
+            for (final Map.Entry<String, Entity> binding : bindings.getValue().entrySet()) {
+                if (
+                    binding.getValue() instanceof FlatObject &&
+                    ((FlatObject) binding.getValue()).getName().equals(from)
+                ) {
+                    binding.setValue(
+                        new FlatObject(to, ((FlatObject) binding.getValue()).getLocator())
+                    );
+                }
+            }
+        }
+        this.box.putObject(to, this.box.getObject(from));
+        this.box.getBox().remove(from);
+    }
+
+    /**
      * Finds the maximum index of the objects.
-     * @param box The objects box.
      * @return The maximum index of the objects.
      */
-    private static int findMaxIndex(final ObjectsBox box) {
-        return box.getBox().keySet().stream()
+    private int findMaxIndex() {
+        return this.box.getBox().keySet().stream()
             .map(key -> Integer.parseInt(key.substring(1)))
             .max(Integer::compareTo).orElse(0);
     }
