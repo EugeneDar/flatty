@@ -45,7 +45,7 @@ public final class FlatObject extends Entity {
      * @param name The name of the object.
      */
     public FlatObject(final String name) {
-        this(name, "𝜋");
+        this(name, "");
     }
 
     /**
@@ -76,16 +76,16 @@ public final class FlatObject extends Entity {
 
     @Override
     public String toString() {
-        return String.format("%s(%s)", this.getName(), this.getLocator());
+        return this.locator.isEmpty() ? this.name : String.format("%s(%s)", this.name, this.locator);
     }
 
     @Override
     public Entity copy() {
-        return new FlatObject(this.getName(), this.getLocator());
+        return new FlatObject(this.name, this.locator);
     }
 
     @Override
     public Entity reframe() {
-        return new FlatObject(this.getName(), "𝜋".concat(this.getLocator()));
+        return this.locator.isEmpty() ? this.copy() : new FlatObject(this.getName(), "");
     }
 }

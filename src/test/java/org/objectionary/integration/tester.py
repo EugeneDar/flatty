@@ -24,6 +24,7 @@ JAVA_FILES = [
 def walk_files(directory):
     for root, dirs, files in os.walk(directory):
         for f in files:
+            print("Running test: " + f)
             file_path = os.path.abspath(os.path.join(root, f))
             run_java(file_path)
             flat_file = file_path.replace("input", "flat")
@@ -48,6 +49,10 @@ def run_java(test_name):
 def run_rust(test_name, correct):
     directory = sys.argv[1]
     subprocess.run(["cargo", "build", "--release"], cwd=directory)
-    subprocess.run(["target/release/custom_executor", test_name, correct], cwd=directory)
+    ret = subprocess.run(["target/release/custom_executor", test_name, correct], cwd=directory)
+    if ret.returncode != 0:
+        print("Test failed: " + test_name)
+        subprocess.run(["rm", test_name])
+        sys.exit(1)
 
 walk_files("src/test/java/org/objectionary/integration/resources")
