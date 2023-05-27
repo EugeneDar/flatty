@@ -33,13 +33,13 @@ import flatty.Flatter;
 
 ### Usage
 
-1. The basic usage of Flatty involves the following steps:
+The basic usage of Flatty involves the following steps:
 
-2. Use the Parser class to parse the input program written in EO.
+1. Use the Parser class to parse the input program written in EO.
 
-3. Create a Flatter object by passing the parsed program to it.
+2. Create a Flatter object by passing the parsed program to it.
 
-4. Execute the flat method to optimize the program.
+3. Execute the flat method to optimize the program.
 
 Retrieve the optimized code as a string.
 
