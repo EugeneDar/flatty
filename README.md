@@ -54,4 +54,4 @@ You can find examples of some nested objects in the `src/test/java/org/objection
 ### Run integration tests
 
     $  git clone https://github.com/objectionary/phie
-    $  python3 src/test/java/org/objectionary/integration/tester.py <path_to_phi_dir>
+    $  python3 src/test/java/org/objectionary/integration/tester.py <path_to_phie_dir>
